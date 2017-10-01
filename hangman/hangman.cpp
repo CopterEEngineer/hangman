@@ -12,10 +12,13 @@ int main()
 	HangmanGame hg;
 	clock_t tStart;
 
+
 	tStart = clock();
-	hg.HangmanInit();
+
+	HangmanPlayMP(hg, tStart);
+	/*hg.HangmanInit();
 	hg.HangmanPlay();
-	hg.HangmanReport(tStart);
+	hg.HangmanReport(tStart);*/
 	
 	system("pause");
 	return 0;

@@ -8,10 +8,11 @@
 #include <algorithm>
 #include <iterator>
 #include <time.h>
+#include <omp.h>
 
 using namespace std;
 
-#define Abs(a) (a) >=0 ? (a):(-a)
+#define Abs(a) ((a) >=0 ? (a):(-a))
 
 class HangmanGame
 {
@@ -22,8 +23,11 @@ public:
 	void HangmanInit(void);
 	void HangmanPlay(void);
 	void HangmanReport(clock_t);
+	void HangmanReport(clock_t, int);
 
-private:
+	friend void HangmanPlayMP(HangmanGame, clock_t);
+
+//private:
 	string ToLower(string s);
 	bool isAlpha(string s);
 	void PlayInit(void);
@@ -31,24 +35,48 @@ private:
 	void BoardShow(string);
 	void BoardShow(char);
 	void ExtractWordPool(void);
+	void ExtractWordPool(set<string>);
 	void ReducedWordPool(void);
+	void ReducedWordPool(set<string>);
+	void UpdateWordPool(string);
+	void UpdateWordPool(string, set<string>&);
 	char Guess(void);
+	char Guess(int);
 	void LetterFrequency(map<char, int> &M);
+	void InitLtFrequency(map<char, int> &M);
 	void WordFrequency(map<char, int> &M);
+	void HangmanNB(map<char, int> &distribution);
 	int isHit(string, char, vector<int>&);
 	void isGameover(int, int, int&);
 	void RecordUnguessed(string s);
 	void RecordGuessed(string s);
+	float WinChance(int, set<string>, set<char>);
+	float WinChance(int, set<string>, set<char>, char);
+	char maxChanceChar(int);
 
-private:
-	int wordLength, life;
+	set<string> findPattern(int, set<string>&);
+	set<string> _findPattern1(set<string>&);
+	set<string> _findPattern2(set<string>&);
+	int LevenshteinDistance(string, string);
+	int FreqDistance(string, string);
+
+//private:
+	int wordLength, life, extlength;
 	vector<char> wordChars, alphabet;
-	set<string> wordPool, reducedwordPool;
+	vector<char> missChars, hitChars;
+
+	set<string> wordPool, OrgwordPool, reducedwordPool, ExtendwordPool;
+	set<string> wordGuessed, wordUnGuessed, reducedwordUnGd;
+	vector<string> deleteWords;
+
 	vector<string> wordTest;
-	set<char> missChars, hitChars;
-	set<string> wordGuessed, wordUnGuessed;
+	set<char> remainChars;
+	map<int, vector<char>> alphabets;
 };
 
+
+void HangmanPlayMP(clock_t);
+void HangmanReport(clock_t, set<string>&, set<string>&, int);
 
 template<typename A, typename B>
 pair<B, A> flip_pair(const pair<A, B> &p)

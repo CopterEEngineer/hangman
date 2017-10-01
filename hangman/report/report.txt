@@ -1,0 +1,4 @@
+Number of word tested: 431728
+Number of word guessed correctly: 109091
+Correct Guessed (%): 25.2685
+Time to run: 166.519 seconds
